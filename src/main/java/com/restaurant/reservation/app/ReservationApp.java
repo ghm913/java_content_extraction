@@ -45,8 +45,10 @@ public class ReservationApp {
             try {
                 Reservation reservation = service.extractReservationInfo(input);
                 System.out.println("Extrahiert: " + reservation);
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 System.out.println("Fehler: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Fehler: Unerwarteter Fehler bei der Verarbeitung");
             }
             
             System.out.println();
