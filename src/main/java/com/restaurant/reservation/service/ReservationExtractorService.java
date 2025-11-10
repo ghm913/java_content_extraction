@@ -5,9 +5,7 @@ import com.restaurant.reservation.model.Reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Main service for extracting reservation information from German text.
- */
+/** Haupt-Service zur Extraktion aller Reservierungsinformationen aus deutschem Text. */
 public class ReservationExtractorService {
     
     private final CustomerNameExtractionService customerNameExtractor;
@@ -15,9 +13,6 @@ public class ReservationExtractorService {
     private final TimeExtractionService timeExtractor;
     private final PeopleCountExtractionService peopleCountExtractor;
 
-    /**
-     * Default constructor that creates all extraction services.
-     */
     public ReservationExtractorService() {
         this.customerNameExtractor = new CustomerNameExtractionService();
         this.dateExtractor = new DateExtractionService();
@@ -25,16 +20,12 @@ public class ReservationExtractorService {
         this.peopleCountExtractor = new PeopleCountExtractionService(new GermanNumberParserService());
     }
 
-    /**
-     * Extracts reservation information from German text.
-     * All information must be present: customer name, date, time, and number of people.
-     */
+    /** Extrahiert alle Reservierungsinformationen aus Text. */
     public Reservation extractReservationInfo(String text) {
         if (text == null || text.trim().isEmpty()) {
             throw new IllegalArgumentException("Text cannot be null or empty");
         }
 
-        // Debug output for total extraction
         System.err.println("DEBUG ReservationExtractor INPUT: '" + text + "'");
         
         StringBuilder missingInfo = new StringBuilder();
@@ -43,7 +34,6 @@ public class ReservationExtractorService {
         LocalTime time = null;
         Integer numberOfPeople = null;
 
-        // Try to extract customer name
         try {
             customerName = customerNameExtractor.extractCustomerName(text);
             System.err.println("DEBUG: Customer name extracted: '" + customerName + "'");
@@ -52,7 +42,6 @@ public class ReservationExtractorService {
             missingInfo.append("Customer name not found. ");
         }
 
-        // Try to extract date
         try {
             date = dateExtractor.extractDate(text);
             System.err.println("DEBUG: Date extracted: " + date);
@@ -61,7 +50,6 @@ public class ReservationExtractorService {
             missingInfo.append("Date not found. ");
         }
 
-        // Try to extract time
         try {
             time = timeExtractor.extractTime(text);
             System.err.println("DEBUG: Time extracted: " + time);
@@ -70,7 +58,6 @@ public class ReservationExtractorService {
             missingInfo.append("Time not found. ");
         }
 
-        // Try to extract number of people
         try {
             numberOfPeople = peopleCountExtractor.extractNumberOfPeople(text);
             System.err.println("DEBUG: People count extracted: " + numberOfPeople);
@@ -79,7 +66,6 @@ public class ReservationExtractorService {
             missingInfo.append("Number of people not found. ");
         }
 
-        // Check if all required information was found
         if (missingInfo.length() > 0) {
             System.err.println("DEBUG: Final result - INCOMPLETE: " + missingInfo.toString().trim());
             throw new IllegalArgumentException("Incomplete reservation information: " + missingInfo.toString().trim());
@@ -89,9 +75,7 @@ public class ReservationExtractorService {
         return new Reservation(customerName, date, time, numberOfPeople);
     }
 
-    /**
-     * Checks if text contains all required reservation components.
-     */
+    /** Prüft ob Text alle erforderlichen Reservierungskomponenten enthält. */
     public boolean containsCompleteReservationInfo(String text) {
         return text != null && 
                customerNameExtractor.containsCustomerName(text) &&
