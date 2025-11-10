@@ -7,9 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for GermanNumberParserService.
- */
+/** Tests für GermanNumberParserService. */
 class GermanNumberParserServiceTest {
 
     private GermanNumberParserService service;

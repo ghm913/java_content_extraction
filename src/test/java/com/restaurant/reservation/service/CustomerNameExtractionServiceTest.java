@@ -7,9 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for CustomerNameExtractionService.
- */
+/** Tests für CustomerNameExtractionService. */
 class CustomerNameExtractionServiceTest {
 
     private CustomerNameExtractionService service;

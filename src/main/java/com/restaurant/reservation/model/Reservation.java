@@ -3,9 +3,7 @@ package com.restaurant.reservation.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Represents a restaurant reservation with extracted information.
- */
+/** Datenmodell für eine Restaurant-Reservierung. */
 public class Reservation {
     private final String customerName;
     private final LocalDate date;

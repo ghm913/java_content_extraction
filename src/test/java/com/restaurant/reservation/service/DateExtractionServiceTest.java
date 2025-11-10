@@ -10,9 +10,7 @@ import java.time.Year;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for DateExtractionService.
- */
+/** Tests für DateExtractionService. */
 class DateExtractionServiceTest {
 
     private DateExtractionService service;

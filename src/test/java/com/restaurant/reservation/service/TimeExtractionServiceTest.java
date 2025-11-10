@@ -9,9 +9,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for TimeExtractionService.
- */
+/** Tests für TimeExtractionService. */
 class TimeExtractionServiceTest {
 
     private TimeExtractionService service;

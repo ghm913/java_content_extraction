@@ -6,9 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for PeopleCountExtractionService.
- */
+/** Tests für PeopleCountExtractionService. */
 class PeopleCountExtractionServiceTest {
 
     private PeopleCountExtractionService service;

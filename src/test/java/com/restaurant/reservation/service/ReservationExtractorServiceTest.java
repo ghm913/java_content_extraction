@@ -13,9 +13,7 @@ import java.time.Year;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for ReservationExtractorService.
- */
+/** Tests für ReservationExtractorService. */
 class ReservationExtractorServiceTest {
     
     private ReservationExtractorService service;
