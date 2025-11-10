@@ -27,39 +27,27 @@ public class ReservationExtractorService {
         }
         
         StringBuilder errors = new StringBuilder();
-        String customerName = null;
-        LocalDate date = null;
-        LocalTime time = null;
-        Integer numberOfPeople = null;
-
-        try {
-            customerName = customerNameExtractor.extractCustomerName(text);
-        } catch (IllegalArgumentException e) {
-            errors.append(e.getMessage()).append(" ");
-        }
-
-        try {
-            date = dateExtractor.extractDate(text);
-        } catch (IllegalArgumentException e) {
-            errors.append(e.getMessage()).append(" ");
-        }
-
-        try {
-            time = timeExtractor.extractTime(text);
-        } catch (IllegalArgumentException e) {
-            errors.append(e.getMessage()).append(" ");
-        }
-
-        try {
-            numberOfPeople = peopleCountExtractor.extractNumberOfPeople(text);
-        } catch (IllegalArgumentException e) {
-            errors.append(e.getMessage()).append(" ");
-        }
+        
+        // Lambda-basierte Extraktion mit minimalen Änderungen
+        String customerName = tryExtract(() -> customerNameExtractor.extractCustomerName(text), errors);
+        LocalDate date = tryExtract(() -> dateExtractor.extractDate(text), errors);
+        LocalTime time = tryExtract(() -> timeExtractor.extractTime(text), errors);
+        Integer numberOfPeople = tryExtract(() -> peopleCountExtractor.extractNumberOfPeople(text), errors);
 
         if (errors.length() > 0) {
             throw new IllegalArgumentException(errors.toString().trim());
         }
 
         return new Reservation(customerName, date, time, numberOfPeople);
+    }
+    
+    // Einfache Hilfsmethode für Try-Catch mit Lambda
+    private <T> T tryExtract(java.util.function.Supplier<T> extractor, StringBuilder errors) {
+        try { 
+            return extractor.get();
+        } catch (IllegalArgumentException e) {
+            errors.append(e.getMessage()).append(" ");
+            return null;
+        }
     }
 }
