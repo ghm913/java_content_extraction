@@ -23,12 +23,10 @@ public class ReservationExtractorService {
     /** Extrahiert alle Reservierungsinformationen aus Text. */
     public Reservation extractReservationInfo(String text) {
         if (text == null || text.trim().isEmpty()) {
-            throw new IllegalArgumentException("Text cannot be null or empty");
+            throw new IllegalArgumentException("Text darf nicht leer sein");
         }
-
-        System.err.println("DEBUG ReservationExtractor INPUT: '" + text + "'");
         
-        StringBuilder missingInfo = new StringBuilder();
+        StringBuilder errors = new StringBuilder();
         String customerName = null;
         LocalDate date = null;
         LocalTime time = null;
@@ -36,51 +34,49 @@ public class ReservationExtractorService {
 
         try {
             customerName = customerNameExtractor.extractCustomerName(text);
-            System.err.println("DEBUG: Customer name extracted: '" + customerName + "'");
         } catch (IllegalArgumentException e) {
-            System.err.println("DEBUG: Customer name extraction failed: " + e.getMessage());
-            missingInfo.append("Customer name not found. ");
+            errors.append("Name nicht gefunden. ");
         }
 
         try {
             date = dateExtractor.extractDate(text);
-            System.err.println("DEBUG: Date extracted: " + date);
         } catch (IllegalArgumentException e) {
-            System.err.println("DEBUG: Date extraction failed: " + e.getMessage());
-            missingInfo.append("Date not found. ");
+            String msg = e.getMessage();
+            if (msg.contains("Invalid date")) {
+                errors.append("Ungültiges Datumsformat. ");
+            } else if (msg.contains("Year must be")) {
+                errors.append("Jahr muss zwischen 2000 und 2100 liegen. ");
+            } else {
+                errors.append("Datum nicht gefunden. ");
+            }
         }
 
         try {
             time = timeExtractor.extractTime(text);
-            System.err.println("DEBUG: Time extracted: " + time);
         } catch (IllegalArgumentException e) {
-            System.err.println("DEBUG: Time extraction failed: " + e.getMessage());
-            missingInfo.append("Time not found. ");
+            String msg = e.getMessage();
+            if (msg.contains("Invalid time")) {
+                errors.append("Ungültiges Zeitformat. ");
+            } else {
+                errors.append("Uhrzeit nicht gefunden. ");
+            }
         }
 
         try {
             numberOfPeople = peopleCountExtractor.extractNumberOfPeople(text);
-            System.err.println("DEBUG: People count extracted: " + numberOfPeople);
         } catch (IllegalArgumentException e) {
-            System.err.println("DEBUG: People count extraction failed: " + e.getMessage());
-            missingInfo.append("Number of people not found. ");
+            String msg = e.getMessage();
+            if (msg.contains("between 1 and 99")) {
+                errors.append("Personenanzahl muss zwischen 1 und 99 liegen. ");
+            } else {
+                errors.append("Personenanzahl nicht gefunden. ");
+            }
         }
 
-        if (missingInfo.length() > 0) {
-            System.err.println("DEBUG: Final result - INCOMPLETE: " + missingInfo.toString().trim());
-            throw new IllegalArgumentException("Incomplete reservation information: " + missingInfo.toString().trim());
+        if (errors.length() > 0) {
+            throw new IllegalArgumentException(errors.toString().trim());
         }
 
-        System.err.println("DEBUG: Final result - SUCCESS");
         return new Reservation(customerName, date, time, numberOfPeople);
-    }
-
-    /** Prüft ob Text alle erforderlichen Reservierungskomponenten enthält. */
-    public boolean containsCompleteReservationInfo(String text) {
-        return text != null && 
-               customerNameExtractor.containsCustomerName(text) &&
-               dateExtractor.containsDate(text) &&
-               timeExtractor.containsTime(text) &&
-               peopleCountExtractor.containsPeopleCount(text);
     }
 }
