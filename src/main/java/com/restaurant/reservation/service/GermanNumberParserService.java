@@ -3,14 +3,11 @@ package com.restaurant.reservation.service;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Service for parsing German number words (1-99) into integer values.
- */
+/** Service zum Parsen deutscher Zahlwörter (1-99) in Integer-Werte. */
 public class GermanNumberParserService {
     
     private static final Map<String, Integer> GERMAN_NUMBERS = new HashMap<>();
     static {
-        // Basic numbers 1-20
         GERMAN_NUMBERS.put("ein", 1);
         GERMAN_NUMBERS.put("eine", 1);
         GERMAN_NUMBERS.put("eins", 1);
@@ -34,7 +31,6 @@ public class GermanNumberParserService {
         GERMAN_NUMBERS.put("neunzehn", 19);
         GERMAN_NUMBERS.put("zwanzig", 20);
         
-        // Tens
         GERMAN_NUMBERS.put("dreißig", 30);
         GERMAN_NUMBERS.put("vierzig", 40);
         GERMAN_NUMBERS.put("fünfzig", 50);
@@ -44,19 +40,15 @@ public class GermanNumberParserService {
         GERMAN_NUMBERS.put("neunzig", 90);
     }
 
-    /**
-     * Parses German number words or numeric strings.
-     */
+    /** Parst deutsche Zahlwörter oder numerische Strings. */
     public Integer parseNumberString(String text) {
         if (text == null || text.trim().isEmpty()) return null;
         
         String number = text.toLowerCase().trim();
         
-        // Try German number first
         Integer germanNumber = GERMAN_NUMBERS.get(number);
         if (germanNumber != null) return germanNumber;
         
-        // Try compound numbers (e.g., "einunddreißig")
         if (number.contains("und")) {
             String[] parts = number.split("und");
             if (parts.length == 2) {
@@ -68,7 +60,6 @@ public class GermanNumberParserService {
             }
         }
         
-        // Try numeric parsing
         try {
             return Integer.parseInt(number);
         } catch (NumberFormatException e) {

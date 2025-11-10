@@ -3,20 +3,30 @@ package com.restaurant.reservation.service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Service for extracting the number of people from German text.
- */
+/** Service zur Extraktion der Personenanzahl aus deutschem Text. */
 public class PeopleCountExtractionService {
 
-    // Supported formats:
-    // 1. Numeric with preposition: "für 4 Personen", "mit 8 Leuten", "für 2 Mann"
-    // 2. Numeric without preposition: "4 Personen", "8 Leute", "2 Menschen"  
-    // 3. German words with preposition: "für zwei Personen", "mit acht Leuten"
-    // 4. German words without preposition: "zwei Personen", "acht Menschen"
-    // - Supports numeric (1-100) 
+    // Unterstützte Formate:
+    // 1. Numerisch mit Präposition: "für 4 Personen", "mit 8 Leuten"
+    // 2. Numerisch ohne Präposition: "4 Personen", "8 Leute"
+    // 3. Zahlwörter mit Präposition: "für zwei Personen", "mit acht Leuten"
+    // 4. Zahlwörter ohne Präposition: "zwei Personen", "acht Menschen"
+    // 5. Nur Zahl mit Präposition: "für 2" (nur mit "für"/"mit")
 
     private static final Pattern PEOPLE_PATTERN = Pattern.compile(
-        "(?:für\\s+|mit\\s+)?(\\d+|[a-zäöüß]+)(?!\\s*(?:uhr|morgens|vormittags|mittags|nachmittags|abends|pm|am))\\s+(?:personen|leuten?|mann|menschen)", 
+        // Pattern 1: Mit Präposition "für" oder "mit"
+        "(?:für|mit)\\s+" +
+        "(\\d+|[a-zäöüß]+)" +  // Anzahl (Zahl oder Wort)
+        "(?:" +
+            "\\s+(?:personen|leuten?|mann|menschen)" +  // mit explizitem Personenwort
+            "|" +
+            "(?=\\s|$)(?!\\s*(?:uhr|morgens|vormittags|mittags|nachmittags|abends|pm|am|p\\.m\\.|a\\.m\\.))" +  // ohne Wort, aber nicht vor Zeitangabe
+        ")" +
+        "|" +
+        // Pattern 2: Ohne Präposition (muss Personenwort folgen)
+        "(\\d+|[a-zäöüß]+)" +  // Anzahl (Zahl oder Wort)
+        "(?!\\s*(?:uhr|morgens|vormittags|mittags|nachmittags|abends|pm|am|p\\.m\\.|a\\.m\\.))" +  // nicht vor Zeitangabe
+        "\\s+(?:personen|leuten?|mann|menschen)",  // muss Personenwort folgen
         Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
     );
 
@@ -26,44 +36,36 @@ public class PeopleCountExtractionService {
         this.germanNumberParser = germanNumberParser;
     }
 
-    /**
-     * Extracts the number of people from German text.
-     */
+    /** Extrahiert Personenanzahl aus Text. */
     public int extractNumberOfPeople(String text) {
         if (text == null || text.trim().isEmpty()) {
-            throw new IllegalArgumentException("Text cannot be null or empty");
+            throw new IllegalArgumentException("Text darf nicht leer sein");
         }
 
         Matcher matcher = PEOPLE_PATTERN.matcher(text);
         while (matcher.find()) {
-            String countText = matcher.group(1);
+            String countText = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
             try {
-                // Try numeric first
                 int count = Integer.parseInt(countText);
-                // Boundary check: 1-99 people
                 if (count < 1 || count > 99) {
-                    throw new IllegalArgumentException("Number of people must be between 1 and 99, got: " + count);
+                    throw new IllegalArgumentException("Number of people must be between 1 and 99");
                 }
                 return count;
             } catch (NumberFormatException e) {
-                // Try German number words
                 Integer count = germanNumberParser.parseNumberString(countText.toLowerCase());
                 if (count != null) {
-                    // Boundary check: 1-99 people
                     if (count < 1 || count > 99) {
-                        throw new IllegalArgumentException("Number of people must be between 1 and 99, got: " + count);
+                        throw new IllegalArgumentException("Number of people must be between 1 and 99");
                     }
                     return count;
                 }
             }
         }
 
-        throw new IllegalArgumentException("Could not extract number of people from: " + text);
+        throw new IllegalArgumentException("Personenanzahl nicht gefunden");
     }
 
-    /**
-     * Checks if text contains a people count pattern.
-     */
+    /** Prüft ob Text ein Personenanzahl-Muster enthält. */
     public boolean containsPeopleCount(String text) {
         return text != null && PEOPLE_PATTERN.matcher(text).find();
     }

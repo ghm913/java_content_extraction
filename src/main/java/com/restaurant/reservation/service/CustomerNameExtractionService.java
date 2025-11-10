@@ -10,9 +10,12 @@ public class CustomerNameExtractionService {
     // 1. Grußformeln (voll/abgekürzt): "Vielen Dank Klaus", "vG Klaus", "mfG Maria"
     // 2. Selbstvorstellungen: "Ich bin Franz Schulze"
     private static final Pattern NAME_PATTERN = Pattern.compile(
-        "(?:dank|gruß|grüße|grüßen|vG|mfG|vd|bg|ich\\s+bin|hier\\s+ist)\\s+" +
-        "([A-ZÄÖÜ][a-zäöüß]+(?:\\s+[A-ZÄÖÜ][a-zäöüß]+){0,2})" +
-        "(?=\\s*[,]|\\s+und|\\s*$)", 
+        "(?:dank|gruß|grüße|grüßen|vG|mfG|vd|bg|ich\\s+bin|hier\\s+ist)" +  // Grußformel/Vorstellung
+        "\\s+" +
+        "([A-ZÄÖÜ][a-zäöüß]+" +  // Erster Name (großgeschrieben)
+            "(?:\\s+[A-ZÄÖÜ][a-zäöüß]+){0,2}" +  // optional bis zu 2 weitere Namen
+        ")" +
+        "(?=\\s*[,]|\\s+und|\\s*$)",  // gefolgt von Komma, "und" oder Zeilenende
         Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
     );
 
