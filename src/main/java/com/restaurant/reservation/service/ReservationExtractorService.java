@@ -35,42 +35,25 @@ public class ReservationExtractorService {
         try {
             customerName = customerNameExtractor.extractCustomerName(text);
         } catch (IllegalArgumentException e) {
-            errors.append("Name nicht gefunden. ");
+            errors.append(e.getMessage()).append(" ");
         }
 
         try {
             date = dateExtractor.extractDate(text);
         } catch (IllegalArgumentException e) {
-            String msg = e.getMessage();
-            if (msg.contains("Invalid date")) {
-                errors.append("Ungültiges Datumsformat. ");
-            } else if (msg.contains("Year must be")) {
-                errors.append("Jahr muss zwischen 2000 und 2100 liegen. ");
-            } else {
-                errors.append("Datum nicht gefunden. ");
-            }
+            errors.append(e.getMessage()).append(" ");
         }
 
         try {
             time = timeExtractor.extractTime(text);
         } catch (IllegalArgumentException e) {
-            String msg = e.getMessage();
-            if (msg.contains("Invalid time")) {
-                errors.append("Ungültiges Zeitformat. ");
-            } else {
-                errors.append("Uhrzeit nicht gefunden. ");
-            }
+            errors.append(e.getMessage()).append(" ");
         }
 
         try {
             numberOfPeople = peopleCountExtractor.extractNumberOfPeople(text);
         } catch (IllegalArgumentException e) {
-            String msg = e.getMessage();
-            if (msg.contains("between 1 and 99")) {
-                errors.append("Personenanzahl muss zwischen 1 und 99 liegen. ");
-            } else {
-                errors.append("Personenanzahl nicht gefunden. ");
-            }
+            errors.append(e.getMessage()).append(" ");
         }
 
         if (errors.length() > 0) {

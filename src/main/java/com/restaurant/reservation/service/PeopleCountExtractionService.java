@@ -48,21 +48,21 @@ public class PeopleCountExtractionService {
             try {
                 int count = Integer.parseInt(countText);
                 if (count < 1 || count > 99) {
-                    throw new IllegalArgumentException("Number of people must be between 1 and 99");
+                    throw new IllegalArgumentException("Personenanzahl muss zwischen 1 und 99 liegen.");
                 }
                 return count;
             } catch (NumberFormatException e) {
                 Integer count = germanNumberParser.parseNumberString(countText.toLowerCase());
                 if (count != null) {
                     if (count < 1 || count > 99) {
-                        throw new IllegalArgumentException("Number of people must be between 1 and 99");
+                        throw new IllegalArgumentException("Personenanzahl muss zwischen 1 und 99 liegen.");
                     }
                     return count;
                 }
             }
         }
 
-        throw new IllegalArgumentException("Personenanzahl nicht gefunden");
+        throw new IllegalArgumentException("Personenanzahl nicht gefunden.");
     }
 
     /** Prüft ob Text ein Personenanzahl-Muster enthält. */

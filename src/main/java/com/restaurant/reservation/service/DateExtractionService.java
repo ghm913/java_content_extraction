@@ -73,7 +73,7 @@ public class DateExtractionService {
                     int year = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Year.now().getValue();
                     
                     if (year < 2000 || year > 2100) {
-                        throw new IllegalArgumentException("Year must be between 2000 and 2100");
+                        throw new IllegalArgumentException("Jahr muss zwischen 2000 und 2100 liegen.");
                     }
                     
                     return LocalDate.of(year, month, day);
@@ -87,11 +87,11 @@ public class DateExtractionService {
             } catch (IllegalArgumentException e) {
                 throw e;
             } catch (Exception e) {
-                throw new IllegalArgumentException("Invalid date format");
+                throw new IllegalArgumentException("Ungültiges Datumsformat.");
             }
         }
 
-        throw new IllegalArgumentException("Datum nicht gefunden");
+        throw new IllegalArgumentException("Datum nicht gefunden.");
     }
 
     /** Prüft ob Text ein Datums-Muster enthält. */

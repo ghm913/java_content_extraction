@@ -30,7 +30,7 @@ public class CustomerNameExtractionService {
             return matcher.group(1).replaceAll("\\s+", " ").trim();
         }
         
-        throw new IllegalArgumentException("Name nicht gefunden");
+        throw new IllegalArgumentException("Name nicht gefunden.");
     }
 
     /** Prüft ob Text ein Namenmuster enthält. */

@@ -41,15 +41,13 @@ public class TimeExtractionService {
                 int minute = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
                 String period = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
                 
-                // Validate hour range
                 if (hour > 23) continue;
                 
-                // Apply period adjustment
                 if (period != null) {
                     period = period.toLowerCase();
                     if (period.equals("nachmittags") || period.equals("abends") || 
                         period.equals("pm") || period.equals("p.m.")) {
-                        if (hour >= 12) continue;  // Invalid: can't say "13 abends"
+                        if (hour >= 12) continue;
                         hour += 12;
                     }
                 }
@@ -61,7 +59,7 @@ public class TimeExtractionService {
             }
         }
 
-        throw new IllegalArgumentException("Uhrzeit nicht gefunden");
+        throw new IllegalArgumentException("Uhrzeit nicht gefunden.");
     }
 
     /** Prüft ob Text ein Uhrzeit-Muster enthält. */
