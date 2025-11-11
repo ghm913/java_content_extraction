@@ -28,7 +28,7 @@ public class ReservationExtractorService {
         
         StringBuilder errors = new StringBuilder();
         
-        // Lambda-basierte Extraktion mit minimalen Änderungen
+        // Lambda-basierte Extraktion
         String customerName = tryExtract(() -> customerNameExtractor.extractCustomerName(text), errors);
         LocalDate date = tryExtract(() -> dateExtractor.extractDate(text), errors);
         LocalTime time = tryExtract(() -> timeExtractor.extractTime(text), errors);
@@ -41,7 +41,6 @@ public class ReservationExtractorService {
         return new Reservation(customerName, date, time, numberOfPeople);
     }
     
-    // Einfache Hilfsmethode für Try-Catch mit Lambda
     private <T> T tryExtract(java.util.function.Supplier<T> extractor, StringBuilder errors) {
         try { 
             return extractor.get();
